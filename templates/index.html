@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>YouTube Analytics Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>YouTube Analytics Dashboard</h1>
+
+    <form method="POST">
+        <input type="text" name="query" placeholder="Enter channel name or URL" required>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if channel %}
+    <div class="cards">
+        <div class="card">
+            <h3>Subscribers</h3>
+            <p>{{ "{:,}".format(channel.subscribers) }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Views</h3>
+            <p>{{ "{:,}".format(channel.views) }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Videos</h3>
+            <p>{{ "{:,}".format(channel.videos) }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Estimated Revenue</h3>
+            <p>${{ channel.min_rev }} – ${{ channel.max_rev }}</p>
+            <p class="disclaimer">
+            </p>
+        </div>
+    </div>
+
+    <div class="chart-box">
+        <canvas id="statsChart"></canvas>
+    </div>
+    {% endif %}
+</div>
+
+<div class="channel-header">
+    <img src="{{ channel.logo }}" alt="Channel Logo" class="channel-logo">
+
+    <div class="channel-info">
+        <h2>{{ channel.name }}</h2>
+        <p>📅 Joined on: {{ channel.created_at }}</p>
+    </div>
+</div>
+
+{% if channel %}
+<script>
+const ctx = document.getElementById('statsChart');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Views', 'Videos', 'Subscribers'],
+        datasets: [{
+            label: 'Channel Statistics',
+            data: [
+                {{ channel.views }},
+                {{ channel.videos }},
+                {{ channel.subscribers }}
+            ],
+            backgroundColor: ['#00e676', '#2196f3', '#ff9800']
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: 'white' } }
+        },
+        scales: {
+            y: { ticks: { color: 'white' } },
+            x: { ticks: { color: 'white' } }
+        }
+    }
+});
+</script>
+{% endif %}
+
+</body>
+</html>
