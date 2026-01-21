@@ -14,4 +14,5 @@ A Flask-based dashboard that allows users to enter any YouTube channel name or U
 - Chart Visualization
 
 ## Dashboard Preview
-![Dashboard Preview](youtube-dashboard-preview.jpg)
+![Dashboard Preview](youtube-dashboard-preview.jpeg)
+
